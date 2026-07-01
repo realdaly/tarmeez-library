@@ -57,7 +57,7 @@ Initialize the viewer globally after the DOM resources load, passing the target 
 
 ```javascript
 // Initialize the library controller
-const bookViewer = new Tarmeez library("bookViewer", {
+const bookViewer = new TarmeezLibrary("bookViewer", {
     // Optional delay in milliseconds before calculating sizes and bindings (default: 2000)
     renderDelay: 1500,
 
