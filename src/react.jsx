@@ -47,7 +47,10 @@ export function TarmeezViewer({
 
         return () => {
             isInitialized.current = false
-            viewerRef.current = null
+            if (viewerRef.current) {
+                viewerRef.current.destroy()
+                viewerRef.current = null
+            }
 
             // Cleanup DOM contents safely
             const containerEl = document.getElementById(viewerContainerId)

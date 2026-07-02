@@ -65,12 +65,40 @@ export class TarmeezLibrary {
     }
 
     _bindEvents() {
-        this.refs.pagesContainer?.addEventListener("scroll", this._throttle(() => this._checkCurrentPage(), 200))
+        this._scrollListener = this._throttle(() => this._checkCurrentPage(), 200)
+        this.refs.pagesContainer?.addEventListener("scroll", this._scrollListener)
 
         if (this.refs.pageInput) {
-            this.refs.pageInput.addEventListener("change", (e) => this._scrollToPage(e.target.value))
-            this.refs.pageInput.addEventListener("click", () => this.refs.pageInput.select())
-            this.refs.pageInput.addEventListener("focus", () => this.refs.pageInput.select())
+            this._pageInputChangeListener = (e) => this._scrollToPage(e.target.value)
+            this._pageInputClickListener = () => this.refs.pageInput.select()
+            this._pageInputFocusListener = () => this.refs.pageInput.select()
+
+            this.refs.pageInput.addEventListener("change", this._pageInputChangeListener)
+            this.refs.pageInput.addEventListener("click", this._pageInputClickListener)
+            this.refs.pageInput.addEventListener("focus", this._pageInputFocusListener)
+        }
+    }
+
+    destroy() {
+        if (this.renderTimeout) {
+            clearTimeout(this.renderTimeout)
+            this.renderTimeout = null
+        }
+
+        if (this.refs.pagesContainer && this._scrollListener) {
+            this.refs.pagesContainer.removeEventListener("scroll", this._scrollListener)
+        }
+
+        if (this.refs.pageInput) {
+            if (this._pageInputChangeListener) {
+                this.refs.pageInput.removeEventListener("change", this._pageInputChangeListener)
+            }
+            if (this._pageInputClickListener) {
+                this.refs.pageInput.removeEventListener("click", this._pageInputClickListener)
+            }
+            if (this._pageInputFocusListener) {
+                this.refs.pageInput.removeEventListener("focus", this._pageInputFocusListener)
+            }
         }
     }
 
@@ -84,7 +112,11 @@ export class TarmeezLibrary {
         this.refs.pagesBody.style.display = "block"
         if (this.refs.pageInput) this.refs.pageInput.disabled = false
 
-        setTimeout(() => {
+        if (this.renderTimeout) {
+            clearTimeout(this.renderTimeout)
+        }
+
+        this.renderTimeout = setTimeout(() => {
             this.pagesArray = this.refs.pagesBody.querySelectorAll(".page")
             this._displayPageNumbers()
             this._addIdsToTitles()
@@ -110,6 +142,7 @@ export class TarmeezLibrary {
             const p = new URL(window.location.href).searchParams.get("p")
             if (p) this._scrollToPage(p)
             this.loading = false
+            this.renderTimeout = null
         }, this.options.renderDelay)
     }
 

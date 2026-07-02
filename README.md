@@ -14,7 +14,7 @@ This library is "skinless": it provides zero cosmetic CSS layouts for all of its
 
 ---
 
-## Installation
+## Vanilla JS Usage
 
 Link the core JavaScript and styling assets into your webpage:
 
@@ -41,12 +41,6 @@ Provide the necessary DOM elements for your book viewer. The library targets ele
 
 <!-- 3. The Table of Contents list box container (optional, must be the same ID as the one passed to the Tarmeez library constructor) -->
 <div id="tableLinks"></div>
-```
-Note: To make scroll to view in table of contents work, you must set a height to "#pagesContainer", example:
-```css
-#pagesContainer {
-    height: calc(100vh - 9vh);
-}
 ```
 
 ---
@@ -149,6 +143,14 @@ function App() {
       </div>
     </div>
   );
+}
+```
+
+Note: To make scroll to view in table of contents work, you must set height to "#pagesContainer", example:
+```css
+#pagesContainer {
+    height: calc(100vh - 9vh);
+    overflow-y: scroll;
 }
 ```
 
