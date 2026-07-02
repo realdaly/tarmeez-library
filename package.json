@@ -1,0 +1,48 @@
+{
+  "name": "tarmeez",
+  "version": "1.0.0",
+  "description": "A lightweight, headless JavaScript library designed to render encoded book text, compile dynamic Table of Contents, and track active scroll pages.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js"
+    },
+    "./styles.css": "./dist/tarmeez-library.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && node postbuild.js"
+  },
+  "keywords": [
+    "book-reader",
+    "pages",
+    "viewer",
+    "table-of-contents",
+    "tarmeez",
+    "react",
+    "react-component"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

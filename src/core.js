@@ -1,12 +1,21 @@
-// Tarmeez library JS script
+// Tarmeez library JS core module
 
-class TarmeezLibrary {
+export class TarmeezLibrary {
     constructor(elementId, options = {}) {
         this.containerId = elementId
         this.container = document.getElementById(elementId)
-        if (!this.container) { console.error(`TarmeezLibrary: "#${elementId}" not found.`); return }
+        if (!this.container) {
+            console.error(`TarmeezLibrary: "#${elementId}" not found.`)
+            return
+        }
 
-        this.options = Object.assign({ renderDelay: 2000, pageCounterId: "pageCounter" }, options)
+        this.options = Object.assign({
+            renderDelay: 2000,
+            pageCounterId: "pageCounter",
+            tableLinksId: "tableLinks",
+            updateUrlParams: true,
+            onPageChange: null
+        }, options)
 
         this.data = null
         this.loading = true
@@ -38,15 +47,20 @@ class TarmeezLibrary {
     }
 
     _setupRefs() {
-        const q = (s) => document.querySelector(s)
+        const q = (s) => this.container.querySelector(s)
+        const g = (id) => document.getElementById(id)
+
+        const pageCounterEl = this.options.pageCounterId ? g(this.options.pageCounterId) : null
+        const tableLinksEl = this.options.tableLinksId ? g(this.options.tableLinksId) : null
+
         this.refs = {
             bookViewer: q("#elBookViewer") || this.container,
             pagesContainer: q("#pagesContainer"),
             pagesBody: q("#elPagesBody"),
             loader: q("#elLoader"),
-            pageInput: q("#elPageInput"),
-            totalPages: q("#elTotalPages"),
-            tableLinks: q("#tableLinks")
+            pageInput: pageCounterEl ? pageCounterEl.querySelector("#elPageInput") : null,
+            totalPages: pageCounterEl ? pageCounterEl.querySelector("#elTotalPages") : null,
+            tableLinks: tableLinksEl
         }
     }
 
@@ -84,8 +98,14 @@ class TarmeezLibrary {
 
             this.linesContainer = this.refs.pagesBody.querySelectorAll(".poem .line")
             this.maxWidth = 0
-            this.linesContainer.forEach(l => { const fc = l.firstElementChild; if (fc && fc.offsetWidth > this.maxWidth) this.maxWidth = fc.offsetWidth })
-            this.linesContainer.forEach(l => { const fc = l.firstElementChild; if (fc) fc.style.width = `${this.maxWidth}px` })
+            this.linesContainer.forEach(l => {
+                const fc = l.firstElementChild
+                if (fc && fc.offsetWidth > this.maxWidth) this.maxWidth = fc.offsetWidth
+            })
+            this.linesContainer.forEach(l => {
+                const fc = l.firstElementChild
+                if (fc) fc.style.width = `${this.maxWidth}px`
+            })
 
             const p = new URL(window.location.href).searchParams.get("p")
             if (p) this._scrollToPage(p)
@@ -100,7 +120,9 @@ class TarmeezLibrary {
             if (!page) return
             const id = Number(page.dataset.page) + 1
             page.id = `page-${id}`
-            const d = document.createElement("div"); d.className = "page-number"; d.textContent = page.dataset.page
+            const d = document.createElement("div")
+            d.className = "page-number"
+            d.textContent = page.dataset.page
             page.appendChild(d)
         })
     }
@@ -109,98 +131,125 @@ class TarmeezLibrary {
         return el.innerHTML
             .replace(/<br\s*\/?>/gi, " ")
             .replace(/<[^>]*>/g, "")
-            .trim();
+            .trim()
     }
 
     _addIdsToTitles() {
         [".chapter", ".header1", ".header2"].forEach(selector => {
             this.refs.pagesBody.querySelectorAll(selector).forEach(el => {
-                el.id = this._getCleanText(el);
-            });
-        });
+                el.id = this._getCleanText(el)
+            })
+        })
     }
 
     _createTableOfContents() {
-        if (!this.refs.tableLinks) return;
+        if (!this.refs.tableLinks) return
 
-        this.refs.tableLinks.innerHTML = "";
+        this.refs.tableLinks.innerHTML = ""
 
         const traverse = (node, container) => {
             node.childNodes.forEach(child => {
-                if (child?.nodeType !== Node.ELEMENT_NODE) return;
+                if (child?.nodeType !== Node.ELEMENT_NODE) return
 
                 if (child.classList.contains("chapter")) {
-                    const text = this._getCleanText(child);
+                    const text = this._getCleanText(child)
 
-                    const div = document.createElement("div");
-                    div.className = "el-toc-chapter";
-                    div.dataset.target = text;
-                    div.innerHTML = `<p class="line-clamp-3">${text}</p>`;
+                    const div = document.createElement("div")
+                    div.className = "el-toc-chapter"
+                    div.dataset.target = text
+                    div.innerHTML = `<p class="line-clamp-3">${text}</p>`
 
-                    container.appendChild(div);
-                    this._makeScrollable(div);
+                    container.appendChild(div)
+                    this._makeScrollable(div)
                 } else if (child.classList.contains("header1")) {
-                    this._tocEntry(child, container, "el-toc-header1");
+                    this._tocEntry(child, container, "el-toc-header1")
                 } else if (child.classList.contains("header2")) {
-                    this._tocEntry(child, container, "el-toc-header2");
+                    this._tocEntry(child, container, "el-toc-header2")
                 } else {
-                    traverse(child, container);
+                    traverse(child, container)
                 }
-            });
-        };
+            })
+        }
 
-        traverse(this.refs.pagesBody, this.refs.tableLinks);
+        traverse(this.refs.pagesBody, this.refs.tableLinks)
     }
 
     _tocEntry(child, container, cls) {
-        const pg = child.closest(".page")?.dataset.page ?? "";
-        const text = this._getCleanText(child);
+        const pg = child.closest(".page")?.dataset.page ?? ""
+        const text = this._getCleanText(child)
 
-        const div = document.createElement("div");
-        div.className = cls;
-        div.dataset.target = text;
+        const div = document.createElement("div")
+        div.className = cls
+        div.dataset.target = text
 
         div.innerHTML = `
             <span class="el-toc-text">${text}</span>
             <span class="el-toc-dotted">.....</span>
             <span class="el-toc-page">${pg}</span>
-        `;
+        `
 
-        container.appendChild(div);
-        this._makeScrollable(div);
+        container.appendChild(div)
+        this._makeScrollable(div)
     }
 
     _makeScrollable(el) {
         el.addEventListener("click", () => this._scrollDivToPosition(el.dataset.target))
     }
 
-    _scrollToPage(num) { if (num) this._scrollDivToPosition(`page-${Number(num) + 1}`) }
+    _scrollToPage(num) {
+        if (num) this._scrollDivToPosition(`page-${Number(num) + 1}`)
+    }
 
     _scrollDivToPosition(targetId) {
-        const t = document.getElementById(targetId), pc = this.refs.pagesContainer
+        const t = document.getElementById(targetId)
+        const pc = this.refs.pagesContainer
         if (t && pc) {
-            const cr = pc.getBoundingClientRect(), er = t.getBoundingClientRect()
+            const cr = pc.getBoundingClientRect()
+            const er = t.getBoundingClientRect()
             pc.scrollTo({ top: er.top - cr.top + pc.scrollTop - 15, behavior: "smooth" })
         }
     }
 
     _checkCurrentPage() {
-        const pc = this.refs.pagesContainer; if (!pc) return
-        const cr = pc.getBoundingClientRect(), mid = cr.top + cr.height / 2
-        let closest = null, dist = Infinity
+        const pc = this.refs.pagesContainer
+        if (!pc) return
+        const cr = pc.getBoundingClientRect()
+        const mid = cr.top + cr.height / 2
+        let closest = null
+        let dist = Infinity
         pc.querySelectorAll(".page").forEach(p => {
-            const r = p.getBoundingClientRect(), d = Math.abs(mid - (r.top + r.height / 2))
-            if (d < dist) { dist = d; closest = p }
+            const r = p.getBoundingClientRect()
+            const d = Math.abs(mid - (r.top + r.height / 2))
+            if (d < dist) {
+                dist = d
+                closest = p
+            }
         })
         if (closest) {
             const parsed = Number(closest.id?.replace("page-", "")) - 1
             if (this.currentPage !== String(parsed) && parsed > 0) {
                 this.currentPage = String(parsed)
                 if (this.refs.pageInput) this.refs.pageInput.value = this.currentPage
-                const u = new URL(window.location.href); u.searchParams.set("p", this.currentPage); history.replaceState(null, "", u.toString())
+                if (this.options.updateUrlParams) {
+                    const u = new URL(window.location.href)
+                    u.searchParams.set("p", this.currentPage)
+                    history.replaceState(null, "", u.toString())
+                }
+                if (typeof this.options.onPageChange === "function") {
+                    this.options.onPageChange(this.currentPage)
+                }
             }
         }
     }
 
-    _throttle(fn, wait) { let last = 0; return (...a) => { const now = Date.now(); if (now - last >= wait) { last = now; return fn.apply(this, a) } } }
+    _throttle(fn, wait) {
+        let last = 0
+        return (...a) => {
+            const now = Date.now()
+            if (now - last >= wait) {
+                last = now
+                return fn.apply(this, a)
+            }
+        }
+    }
 }

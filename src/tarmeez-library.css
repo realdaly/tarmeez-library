@@ -1,0 +1,247 @@
+/* Tarmeez library stylesheet */
+
+:root {
+    --el-background-color: #d8d8d8;
+    --el-accent-color: #5b7b7b;
+    --el-white: #fff;
+    --el-black: #000;
+    --el-radius: 0;
+}
+
+.el-book-viewer {
+    width: 100%;
+    position: relative;
+}
+
+/* Pages container */
+.el-pages-container {
+    width: auto;
+    overflow-y: auto;
+    overflow-x: clip;
+    padding: 8px 12px;
+    background-color: var(--el-background-color);
+    border-radius: var(--el-radius);
+    scroll-behavior: smooth;
+}
+
+@media (min-width: 768px) {
+    .el-pages-container {
+        padding: 12px 24px;
+    }
+}
+
+.el-loader {
+    font-size: 20px;
+    padding-top: 10px;
+    color: var(--el-black);
+    text-align: center;
+}
+
+/* Hide number input spinners functionally */
+#elPageInput::-webkit-outer-spin-button,
+#elPageInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#elPageInput {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* ===== Book Content Styles ===== */
+.page {
+    background-color: #fff;
+    color: #000;
+    font-size: 1.25rem;
+    padding: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    line-height: 2;
+    text-align: justify;
+    overflow-x: clip;
+    border-radius: var(--el-radius);
+}
+
+@media (min-width: 768px) {
+    .page {
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+.page-number {
+    text-align: center;
+    font-weight: bold;
+    padding: 8px;
+    font-size: 14px;
+    line-height: 100%;
+    margin-top: 13px;
+    border-radius: 8px;
+    background-color: var(--el-background-color);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 768px) {
+    .page-number {
+        font-size: 16px;
+    }
+}
+
+.footnote {
+    border-top: 1px dashed var(--el-black);
+    margin-top: 20px;
+    text-align: right;
+    font-size: 18px;
+    padding-top: 8px;
+}
+
+.poem {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    column-gap: 12px;
+    row-gap: 4px;
+    color: var(--el-accent-color);
+    font-weight: bold;
+    text-align: right;
+    max-width: 144px;
+}
+
+@media (min-width: 480px) {
+    .line {
+        max-width: none;
+    }
+}
+
+@media (min-width: 640px) {
+    .line {
+        column-gap: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .line {
+        column-gap: 44px;
+    }
+}
+
+.chapter {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 0;
+    text-align: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--el-accent-color);
+}
+
+@media (min-width: 768px) {
+    .chapter {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .chapter {
+        font-size: 30px;
+    }
+}
+
+.header1 {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 0;
+    display: inline-block;
+}
+
+@media (min-width: 768px) {
+    .header1 {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .header1 {
+        font-size: 24px;
+    }
+}
+
+.header2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--el-accent-color);
+    padding: 21px 0 5px 0;
+    display: inline-block;
+}
+
+@media (min-width: 768px) {
+    .header2 {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .header2 {
+        font-size: 24px;
+    }
+}
+
+.centered {
+    text-align: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.highlight {
+    background-color: var(--el-accent-color);
+    color: var(--el-white);
+}
+
+.encodedImg {
+    border-radius: 12px;
+    background-color: var(--el-background-color);
+    border: 1px dashed var(--el-accent-color);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 100%;
+    max-width: 1024px;
+    height: auto;
+    display: block;
+}
+
+.link {
+    color: var(--el-accent-color);
+    padding: 0 4px;
+    text-decoration: underline;
+    transition: opacity 0.3s;
+}
+
+.link:hover {
+    opacity: 0.7;
+}
+
+.left-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.left {
+    text-align: center;
+    width: fit-content;
+}

@@ -88,6 +88,88 @@ bookViewer.setData({
 
 ---
 
+## React Usage
+
+The NPM package includes a built-in React component version of the library.
+
+### Import Styles & Components
+
+```javascript
+// Import core styling
+import "tarmeez-library/styles.css";
+
+// Import components
+import { TarmeezViewer, Toc, PageCounter } from "tarmeez-library/react";
+```
+
+### Component Example
+
+You can render the player components modularly anywhere in your JSX layout hierarchy. They share data dynamically by matching element IDs:
+
+```jsx
+import React from 'react';
+import { TarmeezViewer, Toc, PageCounter } from 'tarmeez-library/react';
+
+function App() {
+  const bookData = {
+    body: `
+      <div class="page" data-page="1">
+          <h1 class="chapter">الفصل الأول</h1>
+          <p>محتوى الصفحة الأولى...</p>
+      </div>
+      <div class="page" data-page="2">
+          <h2 class="header1">المبحث الأول</h2>
+          <p>محتوى الصفحة الثانية...</p>
+      </div>
+    `
+  };
+
+  const handlePageChange = (page) => {
+    console.log("Current page scrolled to:", page);
+  };
+
+  return (
+    <div className="my-book-app">
+      {/* Renders the page counter input at the top */}
+      <PageCounter id="my-counter" />
+
+      <div style={{ display: 'flex', gap: '20px' }}>
+        {/* Renders main book viewport (binds to the custom counter and toc IDs) */}
+        <TarmeezViewer 
+          data={bookData}
+          renderDelay={1500}
+          onPageChange={handlePageChange}
+          viewerContainerId="my-viewer"
+          pageCounterId="my-counter"
+          tocId="my-toc"
+        />
+
+        {/* Renders clickable Table of Contents layout */}
+        <Toc id="my-toc" />
+      </div>
+    </div>
+  );
+}
+```
+
+### Props Reference
+
+The React wrapper accepts the following props:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `object` | `undefined` | The data object containing `{ body: htmlString }`. |
+| `renderDelay` | `number` | `2000` | Render delay before calculating line heights and TOC structure. |
+| `updateUrlParams` | `boolean` | `true` | Update URL search params as pages are changed/scrolled. |
+| `onPageChange` | `function` | `undefined` | Callback function fired on active page changes. Takes `page` argument. |
+| `showPageCounter` | `boolean` | `true` | Whether to render the page counter header. |
+| `showToc` | `boolean` | `true` | Whether to render the Table of Contents. |
+| `viewerContainerId` | `string` | `"tarmeez-viewer"` | Dom node ID for book text viewport. |
+| `pageCounterId` | `string` | `"tarmeez-counter"` | Dom node ID for page tracker input view. |
+| `tocId` | `string` | `"tarmeez-toc"` | Dom node ID for TOC navigation panel. |
+
+---
+
 ## Customizing Themes & Styles
 
 You can style the book viewer and its components by targeting the class names and IDs in your global CSS files as detailed below.
