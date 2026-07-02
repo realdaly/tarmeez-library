@@ -1,6 +1,6 @@
 {
   "name": "tarmeez-library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A lightweight, headless JavaScript library designed to render encoded book text, compile dynamic Table of Contents, and track active scroll pages.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
